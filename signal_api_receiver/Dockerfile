@@ -1,18 +1,16 @@
-# Stage 1: Original-Binary aus dem kalbasit-Image extrahieren
+# Stage 1: Grab binary from upstream
 FROM kalbasit/signal-api-receiver:latest AS binary-source
 
-# Stage 2: Alpine als saubere Basis mit Shell und Paketmanager
-FROM alpine:latest
+# Stage 2: Dynamic Home Assistant Debian base image matching target architecture
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-debian:latest
+FROM ${BUILD_FROM}
 
-# Benötigte Tools für Home Assistant Add-ons installieren
-RUN apk add --no-cache jq bash ca-certificates gcompat libc6-compat
+# Copy binary directly to /usr/bin/
+COPY --from=binary-source /bin/signal-api-receiver /usr/bin/signal-api-receiver
+RUN chmod +x /usr/bin/signal-api-receiver
 
-# Das kompilierte Go-Binary aus Stage 1 kopieren
-COPY --from=binary-source /bin/signal-api-receiver /bin/signal-api-receiver
-RUN chmod +x /bin/signal-api-receiver
-
-# run.sh Skript hineinkopieren und ausführbar machen
+# Copy run script
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-ENTRYPOINT ["/run.sh"]
+CMD [ "/run.sh" ]

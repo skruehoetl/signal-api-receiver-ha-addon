@@ -1,21 +1,26 @@
-# Stage 1: Offizielles Go-SDK nutzen, um den Quellcode frisch zu kompilieren
+# Stage 1: Go-SDK zum Bauen
 FROM golang:1.22-alpine AS builder
 
-RUN apk add --no-cache git
+# Git und CA-Zertifikate installieren
+RUN apk add --no-cache git ca-certificates
 
-WORKDIR /app
+WORKDIR /src
 
-# Repository direkt klonen und bauen
-RUN git clone https://github.com/kalbasit/signal-api-receiver.git . \
-    && go mod download \
-    && CGO_ENABLED=0 GOOS=linux go build -o /signal-api-receiver .
+# Source Code separat in den Ordner clonen
+RUN git clone https://github.com/kalbasit/signal-api-receiver.git .
 
-# Stage 2: Das fertige Alpine-Add-on
+# Dependencies laden
+RUN go mod download
+
+# Binary kompilieren (statisch verlinkt)
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /signal-api-receiver .
+
+# Stage 2: Schlankes Alpine Runtime Image
 FROM alpine:latest
 
 RUN apk add --no-cache jq bash ca-certificates
 
-# Das frisch kompilierte Binary aus Stage 1 übernehmen
+# Das frisch gebaute Binary kopieren
 COPY --from=builder /signal-api-receiver /usr/bin/signal-api-receiver
 
 COPY run.sh /run.sh

@@ -16,9 +16,9 @@ echo "Service Port: $SERVICE_PORT"
 echo "Log Level: $LOG_LEVEL"
 
 echo "found signal-api-receiver binary at $(which signal-api-receiver)"
-echo "bleep"
+echo "bloop"
 
-exec /bin/signal-api-receiver \
+signal-api-receiver \
     --signal-account "$SIGNAL_ACCOUNT" \
     --signal-api-url "$SIGNAL_API_URL" \
     --server-addr ":$SERVICE_PORT" \

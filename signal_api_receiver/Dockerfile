@@ -1,15 +1,13 @@
-# Stage 1: Grab binary from upstream
-FROM kalbasit/signal-api-receiver:latest AS binary-source
+ARG SIGNAL_API_RECEIVER_IMAGE=kalbasit/signal-api-receiver:sha-e52df2d
 
-# Stage 2: Dynamic Home Assistant Debian base image matching target architecture
+FROM ${SIGNAL_API_RECEIVER_IMAGE} AS signal-api-receiver
+
 FROM ghcr.io/home-assistant/base:latest
 
-# Copy binary directly to /usr/bin/
-COPY --from=binary-source /bin/signal-api-receiver /usr/bin/signal-api-receiver
-RUN chmod +x /usr/bin/signal-api-receiver
+COPY --from=signal-api-receiver /bin/signal-api-receiver /usr/bin/signal-api-receiver
 
-# Copy run script
 COPY run.sh /run.sh
-RUN chmod +x /run.sh
 
-CMD [ "/run.sh" ]
+RUN chmod a+x /run.sh /usr/bin/signal-api-receiver
+
+CMD ["/run.sh"]

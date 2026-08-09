@@ -1,36 +1,44 @@
 #!/usr/bin/with-contenv bashio
 
-bashio::log.info "Starting Signal API Receiver..."
+bashio::log.info "Starting Signal API Receiver"
 
-# Extract options from /data/options.json using bashio
-SIGNAL_ACCOUNT=$(bashio::config 'signal_account')
-SIGNAL_API_URL=$(bashio::config 'signal_api_url')
-SERVICE_PORT=$(bashio::config 'service_port' 8105)
-LOG_LEVEL=$(bashio::config 'log_level' 'info')
+export SIGNAL_ACCOUNT="$(bashio::config 'signal_account')"
+export SIGNAL_API_URL="$(bashio::config 'signal_api_url')"
+export LOG_LEVEL="$(bashio::config 'log_level')"
+export SERVER_ADDR="$(bashio::config 'server_addr')"
+export REPEAT_LAST_MESSAGE="$(bashio::config 'repeat_last_message')"
 
-# Build command array
-FLAGS=(
-    "--signal-account" "${SIGNAL_ACCOUNT}"
-    "--signal-api-url" "${SIGNAL_API_URL}"
-    "--log-level" "${LOG_LEVEL}"
-    "--server-addr" ":${SERVICE_PORT}"
-)
+# MQTT
+if bashio::config.has_value 'mqtt_server'; then
+    export MQTT_SERVER="$(bashio::config 'mqtt_server')"
+fi
 
-# Optional MQTT configuration
-# if bashio::config.has_value 'mqtt_broker'; then
-#     bashio::log.info "Configuring MQTT Broker..."
-#     FLAGS+=("--mqtt-broker" "$(bashio::config 'mqtt_broker')")
-    
-#     if bashio::config.has_value 'mqtt_topic'; then
-#         FLAGS+=("--mqtt-topic" "$(bashio::config 'mqtt_topic')")
-#     fi
-#     if bashio::config.has_value 'mqtt_username'; then
-#         FLAGS+=("--mqtt-username" "$(bashio::config 'mqtt_username')")
-#     fi
-#     if bashio::config.has_value 'mqtt_password'; then
-#         FLAGS+=("--mqtt-password" "$(bashio::config 'mqtt_password')")
-#     fi
-# fi
+if bashio::config.has_value 'mqtt_user'; then
+    export MQTT_USER="$(bashio::config 'mqtt_user')"
+fi
 
-# Execute binary
-exec /usr/bin/signal-api-receiver "${FLAGS[@]}"
+if bashio::config.has_value 'mqtt_password'; then
+    export MQTT_PASSWORD="$(bashio::config 'mqtt_password')"
+fi
+
+if bashio::config.has_value 'mqtt_client_id'; then
+    export MQTT_CLIENT_ID="$(bashio::config 'mqtt_client_id')"
+fi
+
+if bashio::config.has_value 'mqtt_topic_prefix'; then
+    export MQTT_TOPIC_PREFIX="$(bashio::config 'mqtt_topic_prefix')"
+fi
+
+if bashio::config.has_value 'mqtt_qos'; then
+    export MQTT_QOS="$(bashio::config 'mqtt_qos')"
+fi
+
+export MQTT_RETAIN="$(bashio::config 'mqtt_retain')"
+export MQTT_INSECURE_SKIP_VERIFY="$(bashio::config 'mqtt_insecure_skip_verify')"
+
+bashio::log.info "Signal account: ${SIGNAL_ACCOUNT}"
+bashio::log.info "Signal API URL: ${SIGNAL_API_URL}"
+bashio::log.info "Server address: ${SERVER_ADDR}"
+bashio::log.info "Log level: ${LOG_LEVEL}"
+
+exec /usr/bin/signal-api-receiver serve

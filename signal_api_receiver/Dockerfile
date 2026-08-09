@@ -8,7 +8,7 @@ FROM alpine:latest
 RUN apk add --no-cache jq bash ca-certificates
 
 # Das kompilierte Go-Binary aus Stage 1 kopieren
-COPY --from=binary-source /usr/bin/signal-api-receiver /usr/bin/signal-api-receiver
+COPY --from=binary-source /signal-api-receiver /usr/bin/signal-api-receiver
 
 # run.sh Skript hineinkopieren und ausführbar machen
 COPY run.sh /run.sh

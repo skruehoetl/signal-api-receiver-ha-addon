@@ -12,8 +12,12 @@ LOG_LEVEL=$(jq --raw-output '.log_level // "info"' $CONFIG_PATH)
 echo "Starting signal-api-receiver..."
 echo "Account: $SIGNAL_ACCOUNT"
 echo "Signal API URL: $SIGNAL_API_URL"
+echo "Service Port: $SERVICE_PORT"
+echo "Log Level: $LOG_LEVEL"
 
-exec /usr/bin/signal-api-receiver \
+echo "found signal-api-receiver binary at $(which signal-api-receiver)"
+
+exec /bin/signal-api-receiver \
     --signal-account "$SIGNAL_ACCOUNT" \
     --signal-api-url "$SIGNAL_API_URL" \
     --server-addr ":$SERVICE_PORT" \

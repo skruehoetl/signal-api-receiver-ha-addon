@@ -1,15 +1,17 @@
-ARG BUILD_FROM=golang:1.22-alpine
-FROM ${BUILD_FROM} AS builder
+# Stage 1: Original-Binary aus dem kalbasit-Image extrahieren
+FROM kalbasit/signal-api-receiver:latest AS binary-source
 
-WORKDIR /build
-RUN apk add --no-cache git
-RUN git clone https://github.com/kalbasit/signal-api-receiver.git .
-RUN go build -o signal-api-receiver .
-
+# Stage 2: Alpine als saubere Basis mit Shell und Paketmanager
 FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /build/signal-api-receiver /app/
-COPY run.sh /app/
-RUN chmod +x /app/run.sh
 
-CMD ["/app/run.sh"]
+# Benötigte Tools für Home Assistant Add-ons installieren
+RUN apk add --no-cache jq bash ca-certificates
+
+# Das kompilierte Go-Binary aus Stage 1 kopieren
+COPY --from=binary-source /bin/signal-api-receiver /usr/bin/signal-api-receiver
+
+# run.sh Skript hineinkopieren und ausführbar machen
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
+
+ENTRYPOINT ["/run.sh"]

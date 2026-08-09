@@ -2,8 +2,7 @@
 FROM kalbasit/signal-api-receiver:latest AS binary-source
 
 # Stage 2: Dynamic Home Assistant Debian base image matching target architecture
-ARG BUILD_FROM=ghcr.io/home-assistant/base:latest
-FROM ${BUILD_FROM}
+FROM ghcr.io/home-assistant/base:latest
 
 # Copy binary directly to /usr/bin/
 COPY --from=binary-source /bin/signal-api-receiver /usr/bin/signal-api-receiver

@@ -5,7 +5,7 @@ FROM kalbasit/signal-api-receiver:latest AS binary-source
 FROM alpine:latest
 
 # Benötigte Tools für Home Assistant Add-ons installieren
-RUN apk add --no-cache jq bash ca-certificates gcompat
+RUN apk add --no-cache jq bash ca-certificates gcompat libc6-compat
 
 # Das kompilierte Go-Binary aus Stage 1 kopieren
 COPY --from=binary-source /bin/signal-api-receiver /bin/signal-api-receiver

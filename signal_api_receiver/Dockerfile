@@ -1,15 +1,10 @@
-ARG BUILD_FROM=golang:1.22-alpine
-FROM ${BUILD_FROM} AS builder
+ARG BUILD_FROM=kalbasit/signal-api-receiver:latest
+FROM ${BUILD_FROM}
 
-WORKDIR /build
-RUN apk add --no-cache git
-RUN git clone https://github.com/kalbasit/signal-api-receiver.git .
-RUN go build -o signal-api-receiver .
+# Installiere jq zum Auslesen der options.json
+RUN apk add --no-cache jq bash || true
 
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /build/signal-api-receiver /app/
-COPY run.sh /app/
-RUN chmod +x /app/run.sh
+COPY run.sh /run.sh
+RUN chmod +x /run.sh
 
-CMD ["/app/run.sh"]
+ENTRYPOINT ["/run.sh"]

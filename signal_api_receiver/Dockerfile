@@ -9,6 +9,7 @@ RUN apk add --no-cache jq bash ca-certificates gcompat
 
 # Das kompilierte Go-Binary aus Stage 1 kopieren
 COPY --from=binary-source /bin/signal-api-receiver /bin/signal-api-receiver
+RUN chmod +x /bin/signal-api-receiver
 
 # run.sh Skript hineinkopieren und ausführbar machen
 COPY run.sh /run.sh

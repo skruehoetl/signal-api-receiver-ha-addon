@@ -14,7 +14,6 @@ arch:
 
 startup: application
 boot: auto
-
 init: false
 
 ports:
@@ -26,6 +25,7 @@ ports_description:
 options:
   signal_account: null
   signal_api_url: null
+
   log_level: info
   server_addr: ":8105"
   repeat_last_message: false
@@ -42,6 +42,7 @@ options:
 schema:
   signal_account: str
   signal_api_url: url
+
   log_level: list(trace|debug|info|warn|error)
   server_addr: str
   repeat_last_message: bool
@@ -55,4 +56,4 @@ schema:
   mqtt_retain: bool
   mqtt_insecure_skip_verify: bool
 
-stage: experimental
+apparmor: true

@@ -1,0 +1,59 @@
+configuration:
+  signal_account:
+    name: Signal account
+    description: >-
+      Signal phone number used by signal-cli-rest-api, including the
+      international country code.
+
+  signal_api_url:
+    name: Signal API URL
+    description: >-
+      WebSocket URL of the signal-cli-rest-api receive endpoint.
+
+  log_level:
+    name: Log level
+    description: Logging verbosity.
+
+  server_addr:
+    name: Server address
+    description: >-
+      Address on which the REST API listens. The default is :8105.
+
+  repeat_last_message:
+    name: Repeat last message
+    description: >-
+      Return the last received message when no new message is available.
+
+  mqtt_server:
+    name: MQTT server
+    description: >-
+      MQTT broker address including the port.
+
+  mqtt_user:
+    name: MQTT username
+    description: Username used to authenticate with the MQTT broker.
+
+  mqtt_password:
+    name: MQTT password
+    description: Password used to authenticate with the MQTT broker.
+
+  mqtt_client_id:
+    name: MQTT client ID
+    description: Optional unique MQTT client ID.
+
+  mqtt_topic_prefix:
+    name: MQTT topic prefix
+    description: Prefix used for MQTT topics.
+
+  mqtt_qos:
+    name: MQTT QoS
+    description: MQTT quality of service level.
+
+  mqtt_retain:
+    name: MQTT retain
+    description: Retain MQTT message publications.
+
+  mqtt_insecure_skip_verify:
+    name: Skip MQTT TLS verification
+    description: >-
+      Disable TLS certificate verification for MQTT TLS connections.

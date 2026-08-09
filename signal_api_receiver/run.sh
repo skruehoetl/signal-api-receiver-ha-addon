@@ -8,7 +8,6 @@ export LOG_LEVEL="$(bashio::config 'log_level')"
 export SERVER_ADDR="$(bashio::config 'server_addr')"
 export REPEAT_LAST_MESSAGE="$(bashio::config 'repeat_last_message')"
 
-# MQTT
 if bashio::config.has_value 'mqtt_server'; then
     export MQTT_SERVER="$(bashio::config 'mqtt_server')"
 fi
@@ -35,10 +34,5 @@ fi
 
 export MQTT_RETAIN="$(bashio::config 'mqtt_retain')"
 export MQTT_INSECURE_SKIP_VERIFY="$(bashio::config 'mqtt_insecure_skip_verify')"
-
-bashio::log.info "Signal account: ${SIGNAL_ACCOUNT}"
-bashio::log.info "Signal API URL: ${SIGNAL_API_URL}"
-bashio::log.info "Server address: ${SERVER_ADDR}"
-bashio::log.info "Log level: ${LOG_LEVEL}"
 
 exec /usr/bin/signal-api-receiver serve
